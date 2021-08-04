@@ -18,6 +18,8 @@ function App() {
     setCartIsVisible(false)
   }
 
+
+  console.log(hello)
   return (
     <CartProvider>
       {cartIsVisible && <Cart notVisible={hideCartHandler}/>}
