@@ -1,10 +1,13 @@
 import classes from './Cart.module.css';
 import Modal from '../UI/Modal';
 import CartContext from '../../store/cart-context';
-import {useContext} from 'react';
-import CartItem from './CartItem'
+import {useContext,useState} from 'react';
+import CartItem from './CartItem';
+import CheckoutForm from '../../form/CheckoutForm';
 
 const Cart = (props) => {
+
+   const [isVisible,setIsVisible] = useState(false)
 
     const cartCtx = useContext(CartContext)
 
@@ -19,6 +22,14 @@ const Cart = (props) => {
     const cartRemoveItem = (id) =>{
         cartCtx.removeItem(id)
     };
+
+
+    const orderClickHandler =()=>{
+       setIsVisible(true)
+    }
+    const cancelFormHandler =()=>{
+        setIsVisible(false)
+    }
 
     const cartItems = (
         <ul className={classes['cart-items']}>
@@ -41,10 +52,11 @@ const Cart = (props) => {
                <p>Total Amount</p>
                <p>{totalAmount}</p>
            </div>
+           {!isVisible ?
            <div className={classes.actions}>
                <button className={classes['btn--alt']} onClick={props.notVisible}>Close</button>
-               {hasItems && <button className={classes.btn}>Order</button>}
-           </div>
+               {hasItems && <button className={classes.btn} onClick={orderClickHandler}>Order</button>}
+           </div> : <CheckoutForm close={cancelFormHandler}/>}
         </Modal>
     )
 }

@@ -13,3 +13,21 @@ body {
   background-color: #3f3f3f;
 }
 
+.formOption input,
+.formOption label {
+  display: block;
+}
+.invalid input {
+  border: 1px solid #b40e0e;
+  background-color: #fddddd;
+}
+
+.buttons{
+  display: flex;
+  
+}
+
+.nameClass{
+  display:flex;
+  flex-direction: row;
+}

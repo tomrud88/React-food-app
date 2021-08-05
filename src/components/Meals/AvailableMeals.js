@@ -3,66 +3,48 @@ import MealItem from './MealItem';
 import Card from '../UI/Card';
 import { useState, useEffect } from 'react';
 
-const DUMMY_MEALS = [
-    {
-      id:'m1',
-      name: 'Sushi',
-      description: 'Finest fish and veggies',
-      price: 22.99,
-  },
-  {
-    id:'m2',
-    name:'Schnitzel',
-    description: 'A german specialty!',
-    price: 16.50,
-  },
-  {
-    id:'m3',
-    name:'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 12.99,
-  },
-  {
-    id:'m4',
-    name:'Green Bowl',
-    description: 'Healthy...and green..',
-    price: 18.99
-  },
-  ];
-
-
 
   const AvailableMeals = () => {
-
-
     const[mealsList,setMealsList] = useState([]);
     const[isLoading,setIsLoading] = useState(true);
+    const[httpError,setHttpError] = useState()
 
     useEffect(() => {
-      fetchList()
+      const fetchList = async()=>{
+        const response = await fetch('https://food-order-app-cf489-default-rtdb.firebaseio.com/meals.json');
+       
+        if(!response.ok){
+          throw new Error('something went wrong')
+        }
+  
+        const data = await response.json();
+  
+        console.log(data)
+        let loadingArray = []
+  
+        for(const key in data){
+           loadingArray.push(
+             {
+               id:key,
+               description: data[key].description,
+               name:data[key].name,
+               price:data[key].price
+             }
+           )
+        }
+        console.log(loadingArray)
+        setMealsList(loadingArray)
+        setIsLoading(false)
+      }
+  
+      fetchList().catch((error)=>{
+         setHttpError(error.message);
+         setIsLoading(false)
+      })
     }, [])
 
-    const fetchList = async()=>{
-      const response = await fetch('https://food-order-app-cf489-default-rtdb.firebaseio.com/meals.json');
-      const data = await response.json();
-
-      console.log(data)
-      let loadingArray = []
-
-      for(const key in data){
-         loadingArray.push(
-           {
-             id:key,
-             description: data[key].description,
-             name:data[key].name,
-             price:data[key].price
-           }
-         )
-      }
-      console.log(loadingArray)
-      setMealsList(loadingArray)
-      setIsLoading(false)
-    }
+    
+     let errorMessage = httpError && <section><p className={classes.error}>{httpError}</p></section>
      let loading = isLoading && <section><p className={classes.mealLoading}>Loading...</p></section>
      
      const mealList = mealsList.map(meal => <MealItem 
@@ -77,6 +59,7 @@ const DUMMY_MEALS = [
       
         <section className={classes.meals}>
           <Card>
+            {errorMessage}
             {loading}
             <ul>{mealList}</ul>
           </Card>

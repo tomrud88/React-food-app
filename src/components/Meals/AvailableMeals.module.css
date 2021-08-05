@@ -7,6 +7,9 @@
   .mealLoading{
     text-align: center;
   }
+  .error{
+    text-align: center;
+  }
   .meals ul {
     list-style: none;
     margin: 0;
