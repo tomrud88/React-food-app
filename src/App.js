@@ -17,9 +17,7 @@ function App() {
   const hideCartHandler = () =>{
     setCartIsVisible(false)
   }
-  console.log(hey)
-
-  console.log(hello)
+  
   return (
     <CartProvider>
       {cartIsVisible && <Cart notVisible={hideCartHandler}/>}
