@@ -1,13 +1,15 @@
 import classes from './Cart.module.css';
 import Modal from '../UI/Modal';
 import CartContext from '../../store/cart-context';
-import {useContext,useState} from 'react';
+import React, {useContext,useState,ReactFragment} from 'react';
 import CartItem from './CartItem';
 import CheckoutForm from '../../form/CheckoutForm';
 
 const Cart = (props) => {
 
-   const [isVisible,setIsVisible] = useState(false)
+   const [isVisible,setIsVisible] = useState(false);
+   const [formSubmitted,setFormSubmitted] = useState(false);
+   
 
     const cartCtx = useContext(CartContext)
 
@@ -31,6 +33,18 @@ const Cart = (props) => {
         setIsVisible(false)
     }
 
+    const submitFormHandler = async (data) =>{
+      await fetch('https://food-order-app-cf489-default-rtdb.firebaseio.com/orders.json',{
+           method:'POST',
+           body: JSON.stringify({
+               user: data,
+               orderedItems:cartCtx.items
+            })
+       })
+       setFormSubmitted(true);
+       cartCtx.clearItems()
+    }
+
     const cartItems = (
         <ul className={classes['cart-items']}>
             {cartCtx.items.map(item =>(
@@ -45,19 +59,28 @@ const Cart = (props) => {
         </ul>
     )
 
+    
+
+    const cartModalContent = (<React.Fragment>
+        {cartItems}
+        <div className={classes.total}>
+            <p>Total Amount</p>
+            <p>{totalAmount}</p>
+        </div>
+        {!isVisible ?
+        <div className={classes.actions}>
+            <button className={classes['btn--alt']} onClick={props.notVisible}>Close</button>
+            {hasItems && <button className={classes.btn} onClick={orderClickHandler}>Order</button>}
+        </div> : <CheckoutForm onSubmit={submitFormHandler} close={cancelFormHandler}/>}
+        </React.Fragment>)
+         
+         
     return(
+        
         <Modal onClick={props.notVisible}>
-           {cartItems}
-           <div className={classes.total}>
-               <p>Total Amount</p>
-               <p>{totalAmount}</p>
-           </div>
-           {!isVisible ?
-           <div className={classes.actions}>
-               <button className={classes['btn--alt']} onClick={props.notVisible}>Close</button>
-               {hasItems && <button className={classes.btn} onClick={orderClickHandler}>Order</button>}
-           </div> : <CheckoutForm close={cancelFormHandler}/>}
+        {formSubmitted ? <div><h1>thank you for your order!</h1><button onClick={props.notVisible}>close</button></div> : cartModalContent}
         </Modal>
+        
     )
 }
 export default Cart

@@ -16,18 +16,45 @@ body {
 .formOption input,
 .formOption label {
   display: block;
+  margin-right: 15px;
 }
 .invalid input {
   border: 1px solid #b40e0e;
   background-color: #fddddd;
 }
-
+.warning{
+  display: flex;
+  justify-content: center;
+}
 .buttons{
   display: flex;
-  
+  justify-content: space-between;
+}
+
+label{
+  font-size: 20px;
+  font-weight: 900;
+}
+.container{
+  display: flex;
 }
 
 .nameClass{
   display:flex;
   flex-direction: row;
+}
+
+.formButton{
+  padding:8px 16px;
+  border-radius: 20px;
+  margin-right: 5px;
+  margin-top:20px;
+  background-color: #772f14;
+  color:white;
+  box-shadow: 5px,5px,5px,5px #070101;
+  font-size: 16px;
+}
+button:hover{
+  cursor:pointer;
+  transform:scale(1.05);
 }
